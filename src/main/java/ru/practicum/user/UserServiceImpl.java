@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import ru.practicum.exception.DuplicateEmailException;
 import ru.practicum.exception.NotFoundException;
 
@@ -33,19 +34,21 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found."));
 
-        // Only update if the new email is different from the existing one
-        if(user.getEmail() != null && !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
-            if (userRepository.existsByEmail(user.getEmail())) {
+        // WORKAROUND: Only update email if a valid email is provided
+        if (StringUtils.hasText(user.getEmail())) {
+            if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail()) && userRepository.existsByEmail(user.getEmail())) {
                 throw new DuplicateEmailException("User with email " + user.getEmail() + " already exists.");
             }
             existingUser.setEmail(user.getEmail());
         }
 
-        if (user.getName() != null) {
+        if (user.getName() != null) { // Correct null check for name
             existingUser.setName(user.getName());
         }
+
         return userRepository.save(existingUser);
     }
+
 
     @Override
     public User getUserById(Long userId) {
