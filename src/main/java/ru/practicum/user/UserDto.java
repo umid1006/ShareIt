@@ -6,17 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Value
-@Data
-@ToString
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class UserDto {
     Long id;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(max = 255, message = "Name cannot exceed 255 characters")
-    String name;
+    @Size(max = 255, message = "Name cannot exceed 255 characters") // You can omit @NotBlank if you *allow* updating the name to null
+    String name;  //  Allow name updates, but constrain the size
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
