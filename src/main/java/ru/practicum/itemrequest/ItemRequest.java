@@ -1,5 +1,5 @@
 // ItemRequest.java (Entity - in ru.practicum.request)
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 
 import jakarta.persistence.*;
 import lombok.*;

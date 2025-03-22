@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Import!
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.ValidateException;
-import ru.practicum.request.ItemRequest;
-import ru.practicum.request.ItemRequestRepository;
+import ru.practicum.itemrequest.ItemRequest;
+import ru.practicum.itemrequest.ItemRequestRepository;
 import ru.practicum.user.User;
 import ru.practicum.user.UserRepository;
 import ru.practicum.validation.ValidationService;

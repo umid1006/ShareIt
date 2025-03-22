@@ -1,5 +1,5 @@
 // ItemRequestDto.java (DTO - in ru.practicum.request)
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 
 import lombok.*;
 import ru.practicum.user.UserDto;

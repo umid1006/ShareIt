@@ -1,5 +1,5 @@
 // ItemRequestServiceImpl.java (Service Implementation - in ru.practicum.request)
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

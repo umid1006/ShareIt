@@ -1,5 +1,5 @@
 // ItemRequestController.java (Controller - in ru.practicum.request)
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

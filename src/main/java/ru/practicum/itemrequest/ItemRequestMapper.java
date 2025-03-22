@@ -1,5 +1,5 @@
 // ItemRequestMapper.java (Mapper - in ru.practicum.request) -- MAPPER!
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.user.UserMapper;

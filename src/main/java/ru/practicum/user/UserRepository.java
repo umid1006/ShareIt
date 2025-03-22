@@ -2,19 +2,20 @@
 package ru.practicum.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query; // Import Query
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull; // Import NonNull
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findById(Long ownerId);
-    Optional<User> findByEmail(String email); // Add this method
+    @NonNull // Apply NonNull to overridden methods
+    Optional<User> findById(@NonNull Long ownerId); // Keep parameter name consistent
+    Optional<User> findByEmail(String email);
 
-    // Keep this as an example of a custom query, but use findByEmail
-    @Query("select u.id from User u where u.email = :email")
-    Long getUserIdByEmail(@Param("email")String userEmail);
+    boolean existsByEmail(String email);
 
-    @Query("select u from User u where u.id = :id")
-    User getUserById(@Param("id") Long id);
+    @NonNull
+    List<User> findAll();
 }

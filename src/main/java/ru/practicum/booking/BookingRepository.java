@@ -1,0 +1,15 @@
+// booking/BookingRepository.java
+package ru.practicum.booking;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public interface BookingRepository extends JpaRepository<Booking, Long> {
+    // Find bookings by booker ID
+    List<Booking> findByBookerId(Long bookerId);
+
+    // Find bookings by item ID
+    List<Booking> findByItemId(Long itemId);
+}

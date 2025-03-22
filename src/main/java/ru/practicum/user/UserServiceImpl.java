@@ -1,56 +1,56 @@
-//user/UserServiceImpl.java (Corrected with Validation and Transactions)
+// user/UserServiceImpl.java
 package ru.practicum.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; // Import
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.exception.DuplicateEmailException;
 import ru.practicum.exception.NotFoundException;
-import ru.practicum.validation.ValidationService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true) // Add for read-only methods
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final ValidationService validationService; // Inject
 
     @Override
-    @Transactional // Add for write operations
+    @Transactional
     public User saveUser(User user) {
-        validationService.validateUserFields(user); // Validate
-        validationService.checkUniqueEmailToCreate(user); // Validate
-        user.setState(UserState.ACTIVE); // Set initial state
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEmailException("User with email " + user.getEmail() + " already exists.");
+        }
     }
 
     @Override
-    @Transactional // Add for write operations
+    @Transactional
     public User updateUser(User user, Long userId) {
         User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User with id " + userId + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found."));
 
-        // Validate before updating.  Important!
-        validationService.checkExistUserInDB(userId);
-        validationService.checkUniqueEmailToUpdate(user);
+        // Only update if the new email is different from the existing one
+        if(user.getEmail() != null && !user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new DuplicateEmailException("User with email " + user.getEmail() + " already exists.");
+            }
+            existingUser.setEmail(user.getEmail());
+        }
+
         if (user.getName() != null) {
             existingUser.setName(user.getName());
         }
-        if (user.getEmail() != null) {
-            existingUser.setEmail(user.getEmail());
-        }
-        if (user.getState() != null) { //Update state
-            existingUser.setState(user.getState());
-        }
-
         return userRepository.save(existingUser);
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(()-> new NotFoundException("User with id " + id + " not found"));
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User with ID " + userId + " not found."));
     }
 
     @Override
@@ -59,11 +59,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional // Add for write operations
-    public void deleteUser(Long id) {
-        if(!userRepository.existsById(id)){
-            throw new NotFoundException("User with id " + id + " not found");
+    @Transactional
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) { // More efficient check
+            throw new NotFoundException("User with ID " + userId + " not found.");
         }
-        userRepository.deleteById(id);
+        userRepository.deleteById(userId);
     }
 }

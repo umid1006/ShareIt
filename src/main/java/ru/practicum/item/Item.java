@@ -3,7 +3,7 @@ package ru.practicum.item;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ru.practicum.request.ItemRequest;
+import ru.practicum.itemrequest.ItemRequest;
 import ru.practicum.user.User;
 
 @Getter

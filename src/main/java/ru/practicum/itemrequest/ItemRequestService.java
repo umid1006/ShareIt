@@ -1,5 +1,5 @@
 // ItemRequestService.java (Service Interface - in ru.practicum.request)
-package ru.practicum.request;
+package ru.practicum.itemrequest;
 
 import org.springframework.transaction.annotation.Transactional;
 

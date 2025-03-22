@@ -3,7 +3,7 @@ package ru.practicum.item;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.request.ItemRequest;
+import ru.practicum.itemrequest.ItemRequest;
 import ru.practicum.user.User;
 
 @Mapper(componentModel = "spring")

@@ -21,10 +21,6 @@ public class User {
     @Column(name = "name")  // Maps the field to a database column
     private String name;
 
-    @Column(name = "email", unique = true)  // Email should be unique
+    @Column(name = "email", nullable = false, unique = true)  // Email should be unique
     private String email;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state")// Add state
-    private UserState state;
 }
