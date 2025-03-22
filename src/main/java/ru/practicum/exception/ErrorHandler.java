@@ -1,50 +1,46 @@
-// exception/controller/ErrorHandler.java (Improved)
-package ru.practicum.exception;
+// Correct ErrorHandler
+package ru.practicum.shareit.exception.controller; // Correct package
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException; // Import
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.validation.FieldError; // Import
-import java.util.Map;
-import java.util.HashMap; // Import
+import org.springframework.validation.FieldError;
+import ru.practicum.exception.DuplicateEmailException;
+import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidateException;
+import ru.practicum.exception.ErrorResponse;
 
-@RestControllerAdvice
-@Slf4j
-@Getter
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice // This is essential
 public class ErrorHandler {
 
-    @ExceptionHandler(ValidateException.class)  // Use the specific exception
+    @ExceptionHandler(ValidateException.class)
     public ResponseEntity<ErrorResponse> handleValidateException(final ValidateException ex) {
-        log.error("Validation error: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("validation_error", ex.getMessage()));
     }
 
-    @ExceptionHandler(NotFoundException.class) // Use the specific exception
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(final NotFoundException ex) {
-        log.error("Not found error: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("not_found", ex.getMessage()));
     }
 
-    @ExceptionHandler(DuplicateEmailException.class) // Handle the *specific* exception
+    @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ErrorResponse> handleDuplicateEmailException(final DuplicateEmailException ex) {
-        log.error("Conflict error: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(new ErrorResponse("duplicate_email", ex.getMessage()));
+                .body(new ErrorResponse("duplicate_email", ex.getMessage())); // Correct body
     }
 
-    // Handle MethodArgumentNotValidException (for Bean Validation)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        log.error("Validation error: {}", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -54,10 +50,9 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    // Catch-all for other exceptions (optional, but good practice)
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(final Exception ex) {
-        log.error("Unexpected error: {}", ex.getMessage(), ex); // Log the full stack trace
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse("internal_server_error", "An unexpected error occurred."));
